@@ -1,8 +1,7 @@
-import axios from "axios";
+import axiosInstance from "../../../shared/utils/axiosInstance";
 
-const API = "/api/repos";
-
-export const getMyRepos = () => axios.get(API);
-export const createRepo = (data) => axios.post(API, data);
-export const getRepoById = (id) => axios.get(`${API}/${id}`);
-export const addCollaborator = (id, data) => axios.post(`${API}/${id}/collaborators`, data);
+export const getMyRepos = () => axiosInstance.get("/repos");
+export const createRepo = (data) => axiosInstance.post("/repos", data);
+export const getRepoById = (id) => axiosInstance.get(`/repos/${id}`);
+export const addCollaborator = (id, data) => axiosInstance.post(`/repos/${id}/collaborators`, data);
+export const deleteRepo = (id) => axiosInstance.delete(`/repos/${id}`);
