@@ -1,10 +1,12 @@
-import axios from "axios";
+import axiosInstance from "../../../shared/utils/axiosInstance";
 
-const API = "/api/reviews";
+export const getReviewsByRepo = (repoId) => axiosInstance.get(`/reviews/repo/${repoId}`);
+export const getReviewById = (id) => axiosInstance.get(`/reviews/${id}`);
+export const createReviewRequest = (repoId, data) => axiosInstance.post(`/reviews/${repoId}`, data);
 
-export const getReviewsByRepo = (repoId) => axios.get(`${API}/repo/${repoId}`);
-export const getReviewById = (id) => axios.get(`${API}/${id}`);
-export const createReviewRequest = (repoId, data) => axios.post(`${API}/${repoId}`, data);
 export const addThreadEntry = (id, formData) =>
-  axios.post(`${API}/${id}/thread`, formData, { headers: { "Content-Type": "multipart/form-data" } });
-export const updateStatus = (id, status) => axios.patch(`${API}/${id}/status`, { status });
+  axiosInstance.post(`/reviews/${id}/thread`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+export const updateStatus = (id, status) => axiosInstance.patch(`/reviews/${id}/status`, { status });

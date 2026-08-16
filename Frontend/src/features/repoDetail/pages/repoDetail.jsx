@@ -26,7 +26,10 @@ function RepoDetail() {
           <h1>{repo.name}</h1>
           {repo.description && <p className="repo-description">{repo.description}</p>}
         </div>
-        <button className="btn btn-accent" onClick={() => setModalOpen(true)}>Upload version</button>
+        <div className="repo-detail-actions">
+          <Link to={`/repos/${repoId}/reviews`} className="btn btn-ghost">Reviews</Link>
+          <button className="btn btn-accent" onClick={() => setModalOpen(true)}>Upload version</button>
+        </div>
       </header>
 
       <section className="repo-detail-section">
