@@ -1,8 +1,14 @@
-import axios from "axios";
+import axiosInstance from "../../../shared/utils/axiosInstance";
 
-const API = "/api/versions";
+export const getVersionsByRepo = (repoId) => axiosInstance.get(`/versions/${repoId}`);
 
-export const getVersionsByRepo = (repoId) => axios.get(`${API}/${repoId}`);
 export const uploadVersion = (repoId, formData) =>
-  axios.post(`${API}/${repoId}`, formData, { headers: { "Content-Type": "multipart/form-data" } });
-export const linkVersion = (id, data) => axios.patch(`${API}/${id}/link`, data);
+  axiosInstance.post(`/versions/${repoId}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+export const getVersionFileUrl = (fileId) =>
+  `${axiosInstance.defaults.baseURL}/versions/file/${fileId}`;
+
+export const linkVersion = (id, linkedTo) =>
+  axiosInstance.patch(`/versions/${id}/link`, { linkedTo });
