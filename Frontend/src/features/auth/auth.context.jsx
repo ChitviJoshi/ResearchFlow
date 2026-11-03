@@ -3,10 +3,9 @@ import * as authApi from "./services/auth.api";
 
 export const AuthContext = createContext(null);
 
-/**
- * Holds the current user + token, and exposes signup/login/logout.
- * On first load, if a token exists in localStorage, verifies it against /auth/me so a page refresh doesn't silently log the user out.
- */
+// login/signup return `id` but /auth/me returns `_id`; keep one shape across the app
+const normalizeUser = (u) => (u ? { ...u, _id: u._id || u.id } : u);
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -21,10 +20,9 @@ export const AuthProvider = ({ children }) => {
       }
       try {
         const res = await authApi.getMe();
-        setUser(res.data.user);
+        setUser(normalizeUser(res.data.user));
         setToken(savedToken);
       } catch {
-        // token expired/invalid/blacklisted — clear it silently
         localStorage.removeItem("token");
         setUser(null);
         setToken(null);
@@ -39,14 +37,14 @@ export const AuthProvider = ({ children }) => {
     const res = await authApi.signup(data);
     localStorage.setItem("token", res.data.token);
     setToken(res.data.token);
-    setUser(res.data.user);
+    setUser(normalizeUser(res.data.user));
   };
 
   const login = async (data) => {
     const res = await authApi.login(data);
     localStorage.setItem("token", res.data.token);
     setToken(res.data.token);
-    setUser(res.data.user);
+    setUser(normalizeUser(res.data.user));
   };
 
   const logout = async () => {

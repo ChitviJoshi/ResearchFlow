@@ -1,13 +1,7 @@
-// Fetches review requests for a repo, or a single review thread by id
 import { useState, useEffect, useCallback } from "react";
 import * as reviewApi from "../services/review.api";
 import * as repoApi from "../services/repo.api";
 
-/**
- * Fetches review requests for a repo, plus the data needed to open a
- * new one: the repo's collaborators (candidate professors) and its
- * paper-type versions (candidate drafts to attach).
- */
 export const useReviewList = (repoId) => {
   const [reviews, setReviews] = useState([]);
   const [repo, setRepo] = useState(null);
@@ -15,8 +9,8 @@ export const useReviewList = (repoId) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const fetchAll = useCallback(async () => {
-    setLoading(true);
+  const fetchAll = useCallback(async ({ silent = false } = {}) => {
+    if (!silent) setLoading(true);
     setError("");
     try {
       const [reviewsRes, repoRes, versionsRes] = await Promise.all([
@@ -30,7 +24,7 @@ export const useReviewList = (repoId) => {
     } catch (err) {
       setError(err.response?.data?.message || "Failed to load review requests");
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [repoId]);
 
@@ -38,9 +32,10 @@ export const useReviewList = (repoId) => {
     fetchAll();
   }, [fetchAll]);
 
+  // The create response has bare student/professor ids, so re-read the list
   const createReviewRequest = async (data) => {
     const res = await reviewApi.createReviewRequest(repoId, data);
-    setReviews((prev) => [res.data.reviewRequest, ...prev]);
+    await fetchAll({ silent: true });
     return res.data.reviewRequest;
   };
 

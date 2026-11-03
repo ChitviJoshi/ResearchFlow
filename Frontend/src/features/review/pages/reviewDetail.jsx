@@ -23,7 +23,8 @@ function ReviewDetail() {
   if (!reviewRequest) return null;
 
   const isProfessor = reviewRequest.professor._id === user?._id;
-  const isOpen = reviewRequest.status === "open";
+  // CHANGE 1: only an approved request is closed; "changes_requested" still accepts a resubmission
+  const isClosed = reviewRequest.status === "approved";
 
   return (
     <div className="review-detail-page">
@@ -34,7 +35,8 @@ function ReviewDetail() {
           <h1>Review with {reviewRequest.student.name} &amp; {reviewRequest.professor.name}</h1>
           <span className={`review-status status-${reviewRequest.status}`}>{STATUS_LABELS[reviewRequest.status]}</span>
         </div>
-        {isProfessor && isOpen && (
+        {/* CHANGE 2: the professor keeps the buttons until the request is approved */}
+        {isProfessor && !isClosed && (
           <div className="review-actions">
             <button className="btn btn-ghost" onClick={() => updateStatus("changes_requested")}>Request changes</button>
             <button className="btn btn-accent" onClick={() => updateStatus("approved")}>Approve</button>
@@ -44,8 +46,9 @@ function ReviewDetail() {
 
       <ReviewThread thread={reviewRequest.thread} />
 
-      {isOpen && <AddRoundForm onSubmit={addThreadEntry} />}
-      {!isOpen && <p className="home-status">This review request is closed.</p>}
+      {/* CHANGE 3: the upload form shows until the request is approved */}
+      {!isClosed && <AddRoundForm onSubmit={addThreadEntry} />}
+      {isClosed && <p className="home-status">This review request is approved and closed.</p>}
     </div>
   );
 }
