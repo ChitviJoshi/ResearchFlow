@@ -7,6 +7,7 @@ const Repo = require("../models/repo.model");
 const Version = require("../models/version.model");
 const fileService = require("../services/file.service");
 const asyncHandler = require("../utils/asyncHandler");
+const fingerprintService = require("../services/fingerprint.service");
 
 /** Access check: user must be the repo's owner or a collaborator */
 const assertRepoAccess = (repo, userId) => {
@@ -80,6 +81,7 @@ exports.addThreadEntry = asyncHandler(async (req, res) => {
 
   if (!req.file) return res.status(400).json({ message: "No file uploaded" });
 
+  const { contentHash, artifacts } = fingerprintService.inspectUpload(req.file.buffer, req.file.originalname);
   const fileId = await fileService.uploadBuffer(req.file.buffer, req.file.originalname, req.file.mimetype);
 
   const lastVersion = await Version.findOne({ repo: reviewRequest.repo._id, type: "paper" }).sort({ versionNumber: -1 });
@@ -93,6 +95,8 @@ exports.addThreadEntry = asyncHandler(async (req, res) => {
     fileId,
     fileName: req.file.originalname,
     notes: req.body.comment,
+    contentHash,
+    artifacts,
   });
 
   reviewRequest.thread.push({
