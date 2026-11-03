@@ -75,7 +75,7 @@ exports.addThreadEntry = asyncHandler(async (req, res) => {
     return res.status(403).json({ message: "You're not part of this review request" });
   }
 
-  if (reviewRequest.status !== "open") {
+    if (reviewRequest.status === "approved") {
     return res.status(400).json({ message: "This review request is closed" });
   }
 
@@ -105,9 +105,8 @@ exports.addThreadEntry = asyncHandler(async (req, res) => {
     comment: req.body.comment,
   });
 
-  // A new student upload after professor feedback re-opens the loop for review;
-  // reset to "open" in case it was previously marked changes_requested
-  reviewRequest.status = "open";
+    // Only a student's resubmission re-opens the loop; a professor's upload leaves the status alone
+  if (isStudent) reviewRequest.status = "open";
   await reviewRequest.save();
 
   res.status(201).json({ reviewRequest });

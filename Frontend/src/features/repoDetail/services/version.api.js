@@ -10,5 +10,5 @@ export const uploadVersion = (repoId, formData) =>
 export const getVersionFileUrl = (fileId) =>
   `${axiosInstance.defaults.baseURL}/versions/file/${fileId}`;
 
-export const linkVersion = (id, linkedTo) =>
-  axiosInstance.patch(`/versions/${id}/link`, { linkedTo });
+export const linkVersion = (id, derivedFrom) => 
+  axiosInstance.patch(`/versions/${id}/link`, { derivedFrom });

@@ -6,8 +6,9 @@ export const useReviewDetail = (reviewId) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const fetchReview = useCallback(async () => {
-    setLoading(true);
+  // silent = refresh without the full-page loader, so forms stay mounted
+  const fetchReview = useCallback(async ({ silent = false } = {}) => {
+    if (!silent) setLoading(true);
     setError("");
     try {
       const res = await reviewApi.getReviewById(reviewId);
@@ -15,7 +16,7 @@ export const useReviewDetail = (reviewId) => {
     } catch (err) {
       setError(err.response?.data?.message || "Failed to load review request");
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [reviewId]);
 
@@ -23,14 +24,15 @@ export const useReviewDetail = (reviewId) => {
     fetchReview();
   }, [fetchReview]);
 
+  // Mutation responses are not populated, so re-read the full document instead
   const addThreadEntry = async (formData) => {
-    const res = await reviewApi.addThreadEntry(reviewId, formData);
-    setReviewRequest(res.data.reviewRequest);
+    await reviewApi.addThreadEntry(reviewId, formData);
+    await fetchReview({ silent: true });
   };
 
   const updateStatus = async (status) => {
-    const res = await reviewApi.updateStatus(reviewId, status);
-    setReviewRequest(res.data.reviewRequest);
+    await reviewApi.updateStatus(reviewId, status);
+    await fetchReview({ silent: true });
   };
 
   return { reviewRequest, loading, error, addThreadEntry, updateStatus, refetch: fetchReview };
