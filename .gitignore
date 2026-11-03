@@ -5,3 +5,5 @@ Frontend/node_modules/
 Backend/.env
 Frontend/dist/
 *.log
+.postman/
+postman/
