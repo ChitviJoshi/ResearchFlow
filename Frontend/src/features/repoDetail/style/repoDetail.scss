@@ -107,3 +107,46 @@
   display: flex;
   gap: 10px;
 }
+
+.repo-detail-actions a {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.btn-danger {
+  background: var(--color-error);
+  color: #fff;
+
+  &:hover:not(:disabled) { background: #862F22; }
+}
+
+.danger-zone {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 56px;
+  padding: 18px 20px;
+  border: 1px solid #E3B7AF;
+  border-radius: 4px;
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: 16px;
+    color: var(--color-error);
+  }
+
+  p {
+    margin-top: 2px;
+    font-size: 13px;
+    color: var(--color-ink-soft);
+  }
+}
+
+.delete-warning {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-ink-soft);
+}

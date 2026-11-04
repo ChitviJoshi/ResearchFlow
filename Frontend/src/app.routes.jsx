@@ -10,6 +10,8 @@ import RepoDetail from "./features/repoDetail/pages/repoDetail.jsx";
 import ReviewList from "./features/review/pages/reviewList.jsx";
 import ReviewDetail from "./features/review/pages/reviewDetail.jsx";
 
+import Discussion from "./features/chat/pages/discussion.jsx";
+
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -21,6 +23,7 @@ function AppRoutes() {
           <Route path="/" element={<Home />} />
           <Route path="/repos/:repoId" element={<RepoDetail />} />
           <Route path="/repos/:repoId/reviews" element={<ReviewList />} />
+          <Route path="/repos/:repoId/discussion" element={<Discussion />} />
           <Route path="/reviews/:reviewId" element={<ReviewDetail />} />
         </Route>
       </Routes>
