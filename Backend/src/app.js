@@ -7,6 +7,7 @@ const repoRoutes = require("./routes/repo.routes");
 const versionRoutes = require("./routes/version.routes");
 const reviewRoutes = require("./routes/review.routes");
 const userRoutes = require("./routes/user.routes");
+const messageRoutes = require("./routes/message.routes");
 
 const errorMiddleware = require("./middlewares/error.middleware");
 
@@ -20,6 +21,7 @@ app.use("/api/repos", repoRoutes);
 app.use("/api/versions", versionRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/messages", messageRoutes);
 
 app.use(errorMiddleware);
 
