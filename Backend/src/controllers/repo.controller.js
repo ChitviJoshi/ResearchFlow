@@ -2,6 +2,10 @@
 const Repo = require("../models/repo.model");
 const User = require("../models/user.model");
 const asyncHandler = require("../utils/asyncHandler");
+const Version = require("../models/version.model");
+const ReviewRequest = require("../models/reviewRequest.model");
+const Message = require("../models/message.model");
+const fileService = require("../services/file.service");
 
 /**
  * POST /api/repos
@@ -98,7 +102,9 @@ exports.addCollaborator = asyncHandler(async (req, res) => {
 
 /**
  * DELETE /api/repos/:id
- * Deletes a repo. Only the owner can delete it.
+ * Deletes a repo and everything inside it: stored files, versions, review
+ * requests and chat messages. Only the owner can do this. The repo itself is
+ * removed last, so a failure part-way leaves it in place and the delete can be retried.
  */
 exports.deleteRepo = asyncHandler(async (req, res) => {
   const repo = await Repo.findById(req.params.id);
@@ -109,6 +115,17 @@ exports.deleteRepo = asyncHandler(async (req, res) => {
   if (!repo.owner.equals(req.user._id)) {
     return res.status(403).json({ message: "Only the repo owner can delete this repo" });
   }
+
+  const versions = await Version.find({ repo: repo._id }).select("fileId");
+  for (const version of versions) {
+    await fileService.deleteFile(version.fileId);
+  }
+
+  await Promise.all([
+    Version.deleteMany({ repo: repo._id }),
+    ReviewRequest.deleteMany({ repo: repo._id }),
+    Message.deleteMany({ repo: repo._id }),
+  ]);
 
   await repo.deleteOne();
   res.status(200).json({ message: "Repo deleted" });

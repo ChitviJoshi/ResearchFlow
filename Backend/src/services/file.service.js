@@ -28,3 +28,12 @@ exports.downloadStream = (fileId) => {
   const bucket = getBucket();
   return bucket.openDownloadStream(new mongoose.Types.ObjectId(fileId));
 };
+
+/** Removes a stored file and its chunks. A file that is already gone is not an error. */
+exports.deleteFile = async (fileId) => {
+  try {
+    await getBucket().delete(new mongoose.Types.ObjectId(fileId));
+  } catch (err) {
+    console.warn("GridFS delete skipped:", err.message);
+  }
+};
