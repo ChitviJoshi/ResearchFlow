@@ -1,21 +1,33 @@
 import { Link } from "react-router-dom";
-
-const STATUS_LABELS = {
-  open: "Open",
-  approved: "Approved",
-  changes_requested: "Changes requested",
-};
+import StatusPill from "./StatusPill.jsx";
+import { Icon } from "../../../shared/components/icons.jsx";
+import { initials, timeAgo } from "../../../shared/utils/format.js";
 
 function ReviewCard({ review }) {
+  const rounds = review.thread?.length || 0;
+
   return (
-    <Link to={`/reviews/${review._id}`} className="review-card">
-      <div className="review-card-top">
-        <span className={`review-status status-${review.status}`}>{STATUS_LABELS[review.status]}</span>
-        <span className="review-round-count">{review.thread?.length || 0} round{review.thread?.length !== 1 ? "s" : ""}</span>
-      </div>
-      <p className="review-participants">{review.student?.name} &rarr; {review.professor?.name}</p>
-      <p className="review-updated">Updated {new Date(review.updatedAt).toLocaleDateString()}</p>
-    </Link>
+    <li>
+      <Link to={`/reviews/${review._id}`} className="review-row">
+        <span className="review-people" aria-hidden="true">
+          <span className="avatar sm role-student">{initials(review.student?.name)}</span>
+          <Icon name="arrow" size={14} />
+          <span className="avatar sm role-professor">{initials(review.professor?.name)}</span>
+        </span>
+
+        <span className="review-row-main">
+          <span className="review-row-title">
+            {review.student?.name} <span>asked</span> {review.professor?.name} <span>to review</span>
+          </span>
+          <span className="review-row-sub">
+            {rounds} {rounds === 1 ? "round" : "rounds"} · Updated {timeAgo(review.updatedAt)}
+          </span>
+        </span>
+
+        <StatusPill status={review.status} />
+        <Icon name="chevronRight" size={18} className="repo-row-go" />
+      </Link>
+    </li>
   );
 }
 

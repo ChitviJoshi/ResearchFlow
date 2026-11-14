@@ -1,24 +1,39 @@
 import { Link } from "react-router-dom";
+import { Icon } from "../../../shared/components/icons.jsx";
+import { timeAgo } from "../../../shared/utils/format.js";
 
 function RepoCard({ repo, currentUserId }) {
-  const isOwner = repo.owner._id === currentUserId;
+  const isOwner = repo.owner?._id === currentUserId;
+  const people = (repo.collaborators?.length || 0) + 1;
 
   return (
-    <Link to={`/repos/${repo._id}`} className="repo-card">
-      <div className="repo-card-header">
-        <h3>{repo.name}</h3>
-        <span className={`repo-badge ${repo.isPrivate ? "private" : "public"}`}>
-          {repo.isPrivate ? "Private" : "Public"}
+    <li>
+      <Link to={`/repos/${repo._id}`} className="repo-row">
+        <span className="repo-row-icon"><Icon name="folder" size={20} /></span>
+
+        <span className="repo-row-main">
+          <span className="repo-row-name">{repo.name.trim()}</span>
+          {repo.description && <span className="repo-row-desc">{repo.description}</span>}
         </span>
-      </div>
-      {repo.description && <p className="repo-description">{repo.description}</p>}
-      <div className="repo-meta">
-        <span>{isOwner ? "Owned by you" : `By ${repo.owner.name}`}</span>
-        {repo.collaborators?.length > 0 && (
-          <span>{repo.collaborators.length} collaborator{repo.collaborators.length > 1 ? "s" : ""}</span>
-        )}
-      </div>
-    </Link>
+
+        <span className="repo-row-meta">
+          <span className={`role-chip ${isOwner ? "owner" : "shared"}`}>
+            {isOwner ? "Owner" : `Shared by ${repo.owner?.name}`}
+          </span>
+          <span className="repo-row-sub">
+            {people} {people === 1 ? "person" : "people"}
+            {repo.isPrivate && (
+              <>
+                {" · "}<Icon name="lock" size={12} className="inline-icon" /> Private
+              </>
+            )}
+            {" · "}Updated {timeAgo(repo.updatedAt)}
+          </span>
+        </span>
+
+        <Icon name="chevronRight" size={18} className="repo-row-go" />
+      </Link>
+    </li>
   );
 }
 

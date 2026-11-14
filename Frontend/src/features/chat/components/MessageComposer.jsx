@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { Icon } from "../../../shared/components/icons.jsx";
 
 const TYPE_ORDER = ["paper", "dataset", "experiment", "result"];
 const TYPE_LABELS = { paper: "Papers", dataset: "Datasets", experiment: "Experiments", result: "Results" };
@@ -81,7 +82,20 @@ function MessageComposer({ versions, reviews, onSend }) {
         submit();
       }}
     >
-      {error && <div className="auth-error">{error}</div>}
+      {error && <div className="auth-error" role="alert">{error}</div>}
+
+      {(file || pickedVersion) && (
+        <div className="composer-attached">
+          <span className="composer-chip">
+            <Icon name={file ? "scan" : "link"} size={13} />
+            <span>{file ? file.name : `${pickedVersion.fileName} (v${pickedVersion.versionNumber})`}</span>
+            <button type="button" onClick={clearAttachment} aria-label="Remove attachment">
+              <Icon name="close" size={13} />
+            </button>
+          </span>
+          {file && <span className="composer-hint">Compared with this repository, not uploaded.</span>}
+        </div>
+      )}
 
       <textarea
         value={text}
@@ -90,32 +104,25 @@ function MessageComposer({ versions, reviews, onSend }) {
         rows={2}
         maxLength={2000}
         placeholder="Write a message..."
+        aria-label="Message"
       />
-
-      {(file || pickedVersion) && (
-        <div className="composer-chip">
-          <span>{file ? file.name : `${pickedVersion.fileName} (v${pickedVersion.versionNumber})`}</span>
-          <button type="button" onClick={clearAttachment} aria-label="Remove attachment">&times;</button>
-        </div>
-      )}
-      {file && (
-        <p className="composer-hint">
-          This file is compared with what is already in the repository. It is not uploaded.
-        </p>
-      )}
 
       <div className="composer-row">
         <input ref={fileInput} type="file" hidden onChange={chooseFile} />
-        <button type="button" className="btn btn-ghost btn-sm" onClick={() => fileInput.current.click()}>
-          Check a file
+
+        <button type="button" className="tool-btn" onClick={() => fileInput.current.click()} title="Check where a file from your computer appears in this repository">
+          <Icon name="scan" size={15} /> <span>Check a file</span>
         </button>
+
         <button
           type="button"
-          className="btn btn-ghost btn-sm"
+          className="tool-btn"
           onClick={() => setShowPicker((s) => !s)}
           disabled={versions.length === 0}
+          aria-expanded={showPicker}
+          title="Attach something already in this repository"
         >
-          Pick from repo
+          <Icon name="folder" size={15} /> <span>Pick from repo</span>
         </button>
 
         {showPicker && (
@@ -147,7 +154,7 @@ function MessageComposer({ versions, reviews, onSend }) {
         )}
 
         <button type="submit" className="btn btn-accent composer-send" disabled={!canSend}>
-          {sending ? "Sending..." : "Send"}
+          <Icon name="send" size={15} /> {sending ? "Sending..." : "Send"}
         </button>
       </div>
     </form>

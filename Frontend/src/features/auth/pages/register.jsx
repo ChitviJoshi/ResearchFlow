@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
+import AuthAside from "../components/AuthAside.jsx";
 import "../auth.form.scss";
+
+const ROLES = [
+  { value: "student", title: "Student", text: "Upload your work and request reviews" },
+  { value: "professor", title: "Professor", text: "Review papers and give feedback" },
+];
 
 function Register() {
   const { signup } = useAuth();
@@ -30,48 +36,54 @@ function Register() {
   };
 
   return (
-    <div className="auth-page">
-      <form className="auth-form" onSubmit={handleSubmit}>
-        <p className="auth-eyebrow">ResearchFlow</p>
-        <h1>Create your account</h1>
+    <div className="auth-layout">
+      <AuthAside />
 
-        {error && <div className="auth-error">{error}</div>}
+      <main className="auth-panel">
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <p className="eyebrow">Get started</p>
+          <h1>Create your account</h1>
+          <p className="auth-lead">Set up your workspace in a minute.</p>
 
-        <label>
-          Name
-          <input type="text" name="name" value={form.name} onChange={handleChange} required autoFocus />
-        </label>
+          {error && <div className="auth-error" role="alert">{error}</div>}
 
-        <label>
-          Email
-          <input type="email" name="email" value={form.email} onChange={handleChange} required />
-        </label>
-
-        <label>
-          Password
-          <input type="password" name="password" value={form.password} onChange={handleChange} required minLength={8} />
-        </label>
-
-        <fieldset className="auth-role">
-          <legend>I am a</legend>
-          <label className="role-option">
-            <input type="radio" name="role" value="student" checked={form.role === "student"} onChange={handleChange} />
-            Student
+          <label>
+            Name
+            <input type="text" name="name" value={form.name} onChange={handleChange} required autoFocus />
           </label>
-          <label className="role-option">
-            <input type="radio" name="role" value="professor" checked={form.role === "professor"} onChange={handleChange} />
-            Professor
+
+          <label>
+            Email
+            <input type="email" name="email" value={form.email} onChange={handleChange} required />
           </label>
-        </fieldset>
 
-        <button type="submit" className="btn btn-accent" disabled={submitting}>
-          {submitting ? "Creating account..." : "Create account"}
-        </button>
+          <label>
+            Password
+            <input type="password" name="password" value={form.password} onChange={handleChange} required minLength={8} />
+          </label>
 
-        <p className="auth-switch">
-          Already have an account? <Link to="/login">Sign in</Link>
-        </p>
-      </form>
+          <fieldset className="auth-role">
+            <legend>I am a</legend>
+            <div className="role-grid">
+              {ROLES.map((r) => (
+                <label key={r.value} className="role-option">
+                  <input type="radio" name="role" value={r.value} checked={form.role === r.value} onChange={handleChange} />
+                  <span className="role-title">{r.title}</span>
+                  <span className="role-text">{r.text}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <button type="submit" className="btn btn-accent auth-submit" disabled={submitting}>
+            {submitting ? "Creating account..." : "Create account"}
+          </button>
+
+          <p className="auth-switch">
+            Already have an account? <Link to="/login">Sign in</Link>
+          </p>
+        </form>
+      </main>
     </div>
   );
 }

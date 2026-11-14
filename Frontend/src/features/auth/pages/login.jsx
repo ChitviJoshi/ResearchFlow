@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
+import AuthAside from "../components/AuthAside.jsx";
 import "../auth.form.scss";
 
 function Login() {
@@ -30,31 +31,36 @@ function Login() {
   };
 
   return (
-    <div className="auth-page">
-      <form className="auth-form" onSubmit={handleSubmit}>
-        <p className="auth-eyebrow">ResearchFlow</p>
-        <h1>Sign in</h1>
+    <div className="auth-layout">
+      <AuthAside />
 
-        {error && <div className="auth-error">{error}</div>}
+      <main className="auth-panel">
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <p className="eyebrow">Welcome back</p>
+          <h1>Sign in</h1>
+          <p className="auth-lead">Pick up where your research left off.</p>
 
-        <label>
-          Email
-          <input type="email" name="email" value={form.email} onChange={handleChange} required autoFocus />
-        </label>
+          {error && <div className="auth-error" role="alert">{error}</div>}
 
-        <label>
-          Password
-          <input type="password" name="password" value={form.password} onChange={handleChange} required />
-        </label>
+          <label>
+            Email
+            <input type="email" name="email" value={form.email} onChange={handleChange} required autoFocus />
+          </label>
 
-        <button type="submit" className="btn btn-accent" disabled={submitting}>
-          {submitting ? "Signing in..." : "Sign in"}
-        </button>
+          <label>
+            Password
+            <input type="password" name="password" value={form.password} onChange={handleChange} required />
+          </label>
 
-        <p className="auth-switch">
-          New here? <Link to="/register">Create an account</Link>
-        </p>
-      </form>
+          <button type="submit" className="btn btn-accent auth-submit" disabled={submitting}>
+            {submitting ? "Signing in..." : "Sign in"}
+          </button>
+
+          <p className="auth-switch">
+            New here? <Link to="/register">Create an account</Link>
+          </p>
+        </form>
+      </main>
     </div>
   );
 }

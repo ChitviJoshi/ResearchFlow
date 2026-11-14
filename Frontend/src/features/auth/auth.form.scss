@@ -1,110 +1,200 @@
-.auth-page {
+.auth-layout {
   min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+}
+
+/* ---------- left panel ---------- */
+.auth-aside {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 40px 52px;
+  overflow: hidden;
+  color: #F1EEE4;
+  background:
+    radial-gradient(800px 460px at 105% -10%, rgba(255, 255, 255, 0.09), transparent 62%),
+    linear-gradient(160deg, #1B382F 0%, #26493F 55%, #2F5D50 100%);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.13) 1px, transparent 1.3px);
+    background-size: 22px 22px;
+    mask-image: linear-gradient(180deg, transparent 0%, #000 45%, #000 100%);
+    pointer-events: none;
+  }
+
+  > * { position: relative; }
+}
+
+.auth-aside-brand {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 24px;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.auth-aside-copy {
+  max-width: 440px;
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: 31px;
+    line-height: 1.22;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: #fff;
+  }
+
+  p {
+    margin-top: 14px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #C9D8D1;
+  }
+}
+
+.auth-motif {
+  width: 100%;
+  max-width: 430px;
+  height: auto;
+  margin-top: auto;
+}
+
+.motif-node { animation: motif-in 0.55s ease backwards; }
+.motif-edge { animation: motif-draw 0.7s ease backwards; }
+
+@keyframes motif-in { from { opacity: 0; transform: translateY(6px); } }
+@keyframes motif-draw { from { stroke-dashoffset: 1; } }
+
+/* ---------- form side ---------- */
+.auth-panel {
+  display: grid;
+  place-items: center;
+  padding: 40px 24px;
 }
 
 .auth-form {
   width: 100%;
-  max-width: 380px;
-  background: #fff;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 40px 36px;
+  max-width: 390px;
   display: flex;
   flex-direction: column;
   gap: 18px;
-}
 
-.auth-eyebrow {
-  font-family: var(--font-body);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-accent);
-  font-weight: 600;
-}
-
-.auth-form h1 {
-  font-family: var(--font-display);
-  font-size: 28px;
-  font-weight: 600;
-  color: var(--color-ink);
-  margin-top: -8px;
-}
-
-.auth-form label {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--color-ink-soft);
-  font-weight: 500;
-}
-
-.auth-form input[type="email"],
-.auth-form input[type="password"],
-.auth-form input[type="text"] {
-  font-family: var(--font-body);
-  font-size: 14px;
-  padding: 10px 12px;
-  border: 1px solid var(--color-border);
-  border-radius: 3px;
-  color: var(--color-ink);
-  background: var(--color-paper);
-
-  &:focus {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 1px;
+  h1 {
+    margin-top: -10px;
+    font-family: var(--font-display);
+    font-size: 34px;
+    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: -0.015em;
   }
-}
 
-.auth-role {
-  border: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  legend {
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     font-size: 13px;
-    color: var(--color-ink-soft);
     font-weight: 500;
-    padding: 0;
-    margin-bottom: 4px;
+    color: var(--color-ink-soft);
+  }
+
+  input[type="email"], input[type="password"], input[type="text"] {
+    padding: 12px 14px;
+    font-size: 15px;
+    color: var(--color-ink);
+    background: var(--surface);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover { border-color: #CBC2AC; }
+    &:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px rgba(47, 93, 80, 0.18); }
   }
 }
 
-.role-option {
-  flex-direction: row !important;
-  align-items: center;
-  gap: 8px !important;
-  font-weight: 400 !important;
-  cursor: pointer;
-
-  input[type="radio"] {
-    accent-color: var(--color-accent);
-  }
+.auth-lead {
+  margin-top: -8px;
+  font-size: 14.5px;
+  color: var(--color-ink-soft);
 }
 
-.auth-error {
-  background: #FBEAE7;
-  border: 1px solid var(--color-error);
-  color: var(--color-error);
-  font-size: 13px;
-  padding: 10px 12px;
-  border-radius: 3px;
+.auth-submit {
+  margin-top: 4px;
+  padding: 13px 16px;
+  font-size: 15px;
+  border-radius: 10px;
 }
 
 .auth-switch {
-  font-size: 13px;
+  font-size: 13.5px;
   color: var(--color-ink-soft);
-  text-align: center;
 
-  a {
-    color: var(--color-accent);
+  a { color: var(--color-accent); font-weight: 500; }
+}
+
+/* ---------- role choice ---------- */
+.auth-role {
+  border: none;
+  padding: 0;
+
+  legend {
+    margin-bottom: 8px;
+    padding: 0;
+    font-size: 13px;
     font-weight: 500;
+    color: var(--color-ink-soft);
   }
+}
+
+.role-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.role-option {
+  position: relative;
+  gap: 2px !important;
+  padding: 12px 14px;
+  cursor: pointer;
+  background: var(--surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  .role-title { font-size: 14px; font-weight: 600; color: var(--color-ink); }
+  .role-text { font-size: 12px; font-weight: 400; line-height: 1.35; color: var(--color-ink-soft); }
+
+  &:hover { border-color: #CBC2AC; }
+
+  &:has(input:checked) {
+    background: var(--accent-soft);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 1px var(--color-accent);
+  }
+
+  &:has(input:focus-visible) { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+}
+
+@media (max-width: 860px) {
+  .auth-layout { grid-template-columns: 1fr; }
+  .auth-aside { padding: 24px 22px 28px; gap: 18px; }
+  .auth-aside-copy h2 { font-size: 22px; }
+  .auth-aside-copy p, .auth-motif { display: none; }
+  .auth-panel { padding: 28px 20px 48px; align-items: start; }
+  .role-grid { grid-template-columns: 1fr; }
 }
