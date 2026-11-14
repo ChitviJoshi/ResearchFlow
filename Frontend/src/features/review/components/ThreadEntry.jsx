@@ -1,9 +1,14 @@
 import { useState } from "react";
 import axiosInstance from "../../../shared/utils/axiosInstance";
+import { Icon } from "../../../shared/components/icons.jsx";
 
-function ThreadEntry({ entry }) {
+const ACTIONS = { student: "submitted a draft", professor: "returned feedback" };
+
+function ThreadEntry({ entry, who }) {
   const [downloading, setDownloading] = useState(false);
   const version = entry.version;
+  const role = entry.uploadedByRole;
+  const when = new Date(entry.createdAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
 
   const handleDownload = async () => {
     if (!version) return;
@@ -24,18 +29,31 @@ function ThreadEntry({ entry }) {
   };
 
   return (
-    <div className={`thread-entry role-${entry.uploadedByRole}`}>
-      <div className="thread-entry-header">
-        <span className="thread-entry-role">{entry.uploadedByRole === "student" ? "Student" : "Professor"}</span>
-        <span className="thread-entry-date">{new Date(entry.createdAt).toLocaleString()}</span>
+    <li className={`round role-${role}`}>
+      <span className="round-node" aria-hidden="true">
+        <Icon name={role === "professor" ? "review" : "upload"} size={16} />
+      </span>
+
+      <div className="round-body">
+        <div className="round-head">
+          <strong>{who || (role === "professor" ? "Professor" : "Student")}</strong>
+          <span className="round-action">{ACTIONS[role]}</span>
+          <time dateTime={entry.createdAt}>{when}</time>
+        </div>
+
+        {version && (
+          <button type="button" className="round-file" onClick={handleDownload} disabled={downloading}>
+            <Icon name="paper" size={18} />
+            <span className="round-file-name">{version.fileName}</span>
+            <span className="round-file-ver">v{version.versionNumber}</span>
+            <Icon name="download" size={15} className="round-file-dl" />
+            <span className="sr-only">{downloading ? "Downloading" : "Download"}</span>
+          </button>
+        )}
+
+        {entry.comment && <p className="round-comment">{entry.comment}</p>}
       </div>
-      {version && (
-        <button className="thread-entry-file" onClick={handleDownload} disabled={downloading}>
-          {downloading ? "Downloading..." : `📄 ${version.fileName} (v${version.versionNumber})`}
-        </button>
-      )}
-      {entry.comment && <p className="thread-entry-comment">{entry.comment}</p>}
-    </div>
+    </li>
   );
 }
 

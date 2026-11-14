@@ -1,12 +1,14 @@
 import ThreadEntry from "./ThreadEntry.jsx";
 
-function ReviewThread({ thread }) {
+/** The rounds of a review as a timeline. `children` becomes the last "next step" entry. */
+function ReviewThread({ thread, names = {}, children }) {
   return (
-    <div className="review-thread">
+    <ol className="rounds">
       {thread.map((entry) => (
-        <ThreadEntry key={entry._id} entry={entry} />
+        <ThreadEntry key={entry._id} entry={entry} who={names[entry.uploadedByRole]} />
       ))}
-    </div>
+      {children}
+    </ol>
   );
 }
 

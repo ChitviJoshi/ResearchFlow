@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./features/auth/pages/login.jsx";
 import Register from "./features/auth/pages/register.jsx";
 import Protected from "./features/auth/components/protected.jsx";
+import AppShell from "./shared/components/AppShell.jsx";
 
 import Home from "./features/repos/pages/home.jsx";
 import RepoDetail from "./features/repoDetail/pages/repoDetail.jsx";
@@ -20,11 +21,13 @@ function AppRoutes() {
         <Route path="/register" element={<Register />} />
 
         <Route element={<Protected />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/repos/:repoId" element={<RepoDetail />} />
-          <Route path="/repos/:repoId/reviews" element={<ReviewList />} />
-          <Route path="/repos/:repoId/discussion" element={<Discussion />} />
-          <Route path="/reviews/:reviewId" element={<ReviewDetail />} />
+          <Route element={<AppShell />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/repos/:repoId" element={<RepoDetail />} />
+            <Route path="/repos/:repoId/reviews" element={<ReviewList />} />
+            <Route path="/repos/:repoId/discussion" element={<Discussion />} />
+            <Route path="/reviews/:reviewId" element={<ReviewDetail />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

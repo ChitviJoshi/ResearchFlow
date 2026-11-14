@@ -1,25 +1,60 @@
-  /* design tokens */
-
-@import "./style/button.scss";
+@use "./style/base.scss";
+@use "./style/button.scss";
+@use "./style/modal.scss";
 
 :root {
-  /* Academic ledger palette */
+  /* Surfaces and ink */
   --color-paper: #FAF7F0;
   --color-ink: #1F1D1A;
   --color-ink-soft: #5C574E;
-  --color-accent: #2F5D50;      /* deep forest green */
-  --color-accent-hover: #244840;
   --color-border: #DDD6C7;
+  --surface: #FFFDF8;
+  --surface-sunken: #F3EFE5;
+  --line-soft: #E9E3D4;
+
+  /* Accent */
+  --color-accent: #2F5D50;
+  --color-accent-hover: #244840;
+  --accent-soft: #E3ECE7;
   --color-error: #A13D2E;
 
-  --font-display: "Source Serif 4", Georgia, serif;
-  --font-body: "Inter", -apple-system, sans-serif;
+  /* One colour per kind of item: strong tone, soft tint, readable ink on the tint */
+  --t-paper: #2F5D50;      --t-paper-soft: #E3ECE7;      --t-paper-ink: #234A3F;
+  --t-dataset: #8A6D3B;    --t-dataset-soft: #F1EAD9;    --t-dataset-ink: #6F5528;
+  --t-experiment: #3D6A87; --t-experiment-soft: #E1EAF0; --t-experiment-ink: #2E5670;
+  --t-result: #A15A3D;     --t-result-soft: #F4E4DD;     --t-result-ink: #86442B;
+
+  /* One colour per role */
+  --role-professor: #2F5D50;
+  --role-student: #8A6D3B;
+
+  --font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-body: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-1: 0 1px 2px rgba(31, 29, 26, 0.06), 0 1px 1px rgba(31, 29, 26, 0.04);
+  --shadow-2: 0 10px 30px rgba(31, 29, 26, 0.12), 0 2px 6px rgba(31, 29, 26, 0.06);
+  --topbar-h: 58px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { -webkit-text-size-adjust: 100%; }
+
 body {
   font-family: var(--font-body);
-  background: var(--color-paper);
+  font-size: 15px;
+  line-height: 1.5;
   color: var(--color-ink);
+  background:
+    radial-gradient(1100px 480px at 88% -140px, rgba(47, 93, 80, 0.10), transparent 70%),
+    radial-gradient(900px 420px at -8% 0, rgba(138, 109, 59, 0.08), transparent 70%),
+    var(--color-paper);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
 }
+
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
