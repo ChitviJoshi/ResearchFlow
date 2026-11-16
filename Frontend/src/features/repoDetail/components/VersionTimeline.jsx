@@ -7,7 +7,7 @@ import { dayKey, dayLabel } from "../../../shared/utils/format.js";
  * repository, used to find the newest item of each type and to name the
  * sources an item was derived from.
  */
-function VersionTimeline({ versions, allVersions }) {
+function VersionTimeline({ versions, allVersions, onLinkSources }) {
   const everything = allVersions || versions;
 
   const { latestIds, byId } = useMemo(() => {
@@ -47,7 +47,10 @@ function VersionTimeline({ versions, allVersions }) {
                 key={v._id}
                 version={v}
                 isLatest={latestIds.has(v._id)}
-                sources={(v.derivedFrom || []).map((d) => byId.get(d.version)).filter(Boolean)}
+                sources={(v.derivedFrom || [])
+                  .map((d) => ({ item: byId.get(d.version), source: d.source, reason: d.reason }))
+                  .filter((s) => s.item)}
+                onLinkSources={onLinkSources}
               />
             ))}
           </ol>

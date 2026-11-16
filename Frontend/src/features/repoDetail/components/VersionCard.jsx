@@ -3,8 +3,11 @@ import axiosInstance from "../../../shared/utils/axiosInstance";
 import { Icon, TYPE_META } from "../../../shared/components/icons.jsx";
 import { timeOfDay } from "../../../shared/utils/format.js";
 
-/** One entry on the version timeline: a coloured node on the spine plus its details. */
-function VersionCard({ version, isLatest, sources = [] }) {
+/**
+ * One entry on the version timeline: a coloured node on the spine plus its details.
+ * `sources` is a list of { item, source, reason }: what this version was derived from.
+ */
+function VersionCard({ version, isLatest, sources = [], onLinkSources }) {
   const [downloading, setDownloading] = useState(false);
   const meta = TYPE_META[version.type];
 
@@ -57,22 +60,41 @@ function VersionCard({ version, isLatest, sources = [] }) {
             <Icon name="link" size={13} />
             <span>Derived from</span>
             {sources.map((s) => (
-              <span key={s._id} className={`tl-source type-${s.type}`}>{s.fileName}</span>
+              <span
+                key={s.item._id}
+                className={`tl-source type-${s.item.type}${s.source === "manual" ? " is-manual" : ""}`}
+                title={s.source === "manual" ? "Linked by hand" : "Found automatically"}
+              >
+                {s.item.fileName}
+              </span>
             ))}
           </p>
         )}
       </div>
 
-      <button
-        type="button"
-        className="btn btn-ghost btn-icon tl-download"
-        onClick={handleDownload}
-        disabled={downloading}
-        aria-label={`Download ${version.fileName}`}
-        title="Download"
-      >
-        <Icon name="download" size={16} />
-      </button>
+      <div className="tl-actions">
+        {onLinkSources && (
+          <button
+            type="button"
+            className="btn btn-ghost btn-icon"
+            onClick={() => onLinkSources(version)}
+            aria-label={`Edit sources of ${version.fileName}`}
+            title="Edit sources"
+          >
+            <Icon name="link" size={16} />
+          </button>
+        )}
+        <button
+          type="button"
+          className="btn btn-ghost btn-icon"
+          onClick={handleDownload}
+          disabled={downloading}
+          aria-label={`Download ${version.fileName}`}
+          title="Download"
+        >
+          <Icon name="download" size={16} />
+        </button>
+      </div>
     </li>
   );
 }

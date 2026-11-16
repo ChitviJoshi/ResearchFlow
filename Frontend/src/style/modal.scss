@@ -31,12 +31,16 @@
   form { display: flex; flex-direction: column; gap: 16px; }
 
   label {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+    display: block;
     font-size: 13px;
     font-weight: 500;
     color: var(--color-ink-soft);
+  }
+
+  label > input[type="text"], label > select, label > textarea, label > input[type="file"] {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
   }
 
   input[type="text"], select, textarea {
@@ -72,6 +76,7 @@
   }
 
   .checkbox-row {
+    display: flex;
     flex-direction: row;
     align-items: center;
     gap: 8px;
