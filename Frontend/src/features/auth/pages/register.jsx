@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
 import AuthAside from "../components/AuthAside.jsx";
+import { Icon } from "../../../shared/components/icons.jsx";
 import "../auth.form.scss";
 
 const ROLES = [
@@ -16,6 +17,7 @@ function Register() {
   const [form, setForm] = useState({ name: "", email: "", password: "", role: "student" });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const passwordOk = form.password.length >= 8;
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -59,7 +61,19 @@ function Register() {
 
           <label>
             Password
-            <input type="password" name="password" value={form.password} onChange={handleChange} required minLength={8} />
+            <input
+              type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              required
+              minLength={8}
+              aria-describedby="password-hint"
+            />
+            <span id="password-hint" className={`password-hint${passwordOk ? " met" : ""}`}>
+              {passwordOk && <Icon name="check" size={13} strokeWidth={2.4} />}
+              At least 8 characters
+            </span>
           </label>
 
           <fieldset className="auth-role">

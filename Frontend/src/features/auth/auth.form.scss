@@ -198,3 +198,15 @@
   .auth-panel { padding: 28px 20px 48px; align-items: start; }
   .role-grid { grid-template-columns: 1fr; }
 }
+
+/* ---------- password rule hint ---------- */
+.password-hint {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-ink-soft);
+
+  &.met { color: var(--t-paper-ink); font-weight: 500; }
+}
