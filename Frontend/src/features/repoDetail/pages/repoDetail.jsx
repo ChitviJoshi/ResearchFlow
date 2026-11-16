@@ -5,10 +5,14 @@ import { useAuth } from "../../auth/hooks/useAuth.js";
 import VersionTimeline from "../components/VersionTimeline.jsx";
 import UploadVersionModal from "../components/UploadVersionModal.jsx";
 import DeleteRepoModal from "../components/DeleteRepoModal.jsx";
+import PeopleStrip from "../components/PeopleStrip.jsx";
+import AddCollaboratorModal from "../components/AddCollaboratorModal.jsx";
+import LinkSourcesModal from "../components/LinkSourcesModal.jsx";
 import Breadcrumbs from "../../../shared/components/Breadcrumbs.jsx";
 import Skeleton from "../../../shared/components/Skeleton.jsx";
 import { Icon, TYPE_META } from "../../../shared/components/icons.jsx";
 import * as repoApi from "../services/repo.api";
+import * as versionApi from "../services/version.api";
 import "../style/repoDetail.scss";
 
 const TYPES = ["paper", "dataset", "experiment", "result"];
@@ -17,9 +21,11 @@ function RepoDetail() {
   const { repoId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { repo, versions, loading, error, uploadVersion } = useRepoDetail(repoId);
+  const { repo, versions, loading, error, uploadVersion, refetch } = useRepoDetail(repoId);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [peopleOpen, setPeopleOpen] = useState(false);
+  const [linkTarget, setLinkTarget] = useState(null);
   const [filter, setFilter] = useState("all");
 
   if (loading) {
@@ -36,6 +42,18 @@ function RepoDetail() {
   const repoName = repo.name.trim();
   const counts = TYPES.reduce((acc, t) => ({ ...acc, [t]: versions.filter((v) => v.type === t).length }), {});
   const shown = filter === "all" ? versions : versions.filter((v) => v.type === filter);
+
+  const handleAddPerson = async (email) => {
+    await repoApi.addCollaborator(repoId, { email, role: "supervisor" });
+    await refetch({ silent: true });
+  };
+
+  // Returns the ids the server refused (a link that would loop), after refreshing the timeline
+  const handleSaveLinks = async (versionId, ids) => {
+    const res = await versionApi.linkVersion(versionId, ids);
+    await refetch({ silent: true });
+    return res.data.rejected || [];
+  };
 
   const handleDelete = async () => {
     await repoApi.deleteRepo(repoId);
@@ -72,6 +90,8 @@ function RepoDetail() {
         </div>
       </header>
 
+      <PeopleStrip repo={repo} isOwner={isOwner} onAdd={() => setPeopleOpen(true)} />
+
       <section className="repo-section" aria-labelledby="history-title">
         <div className="repo-section-head">
           <h2 id="history-title" className="section-title">Version history</h2>
@@ -100,7 +120,7 @@ function RepoDetail() {
           </div>
         </div>
 
-        <VersionTimeline versions={shown} allVersions={versions} />
+        <VersionTimeline versions={shown} allVersions={versions} onLinkSources={setLinkTarget} />
       </section>
 
       {isOwner && (
@@ -115,7 +135,22 @@ function RepoDetail() {
         </section>
       )}
 
-      <UploadVersionModal isOpen={uploadOpen} onClose={() => setUploadOpen(false)} onUpload={uploadVersion} />
+      <UploadVersionModal isOpen={uploadOpen} onClose={() => setUploadOpen(false)} onUpload={uploadVersion} versions={versions} />
+      <AddCollaboratorModal
+        isOpen={peopleOpen}
+        onClose={() => setPeopleOpen(false)}
+        onAdd={handleAddPerson}
+        ownEmail={user?.email}
+      />
+      {linkTarget && (
+        <LinkSourcesModal
+          key={linkTarget._id}
+          version={linkTarget}
+          versions={versions}
+          onClose={() => setLinkTarget(null)}
+          onSave={handleSaveLinks}
+        />
+      )}
       <DeleteRepoModal
         isOpen={deleteOpen}
         onClose={() => setDeleteOpen(false)}
